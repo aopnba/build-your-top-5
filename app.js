@@ -1,7 +1,9 @@
 const DATA_PATH = "./data/top5-data.json";
 const STORAGE_KEY = "build-your-top-5-board";
-const BODY_FONT = '"Cooper Black Local", "Cooper Black", Georgia, serif';
-const DISPLAY_FONT = '"Basketball", serif';
+const BODY_FONT_FAMILY = '"Cooper Black Web"';
+const DISPLAY_FONT_FAMILY = '"Basketball"';
+const BODY_FONT = `${BODY_FONT_FAMILY}, "Cooper Black", Georgia, serif`;
+const DISPLAY_FONT = `${DISPLAY_FONT_FAMILY}, serif`;
 
 const state = {
   data: null,
@@ -75,20 +77,7 @@ function makeInitials(name) {
 
 function playerMetaMarkup(player) {
   if (!player) {
-    return `
-      <div>
-        <dt>School</dt>
-        <dd>Open slot</dd>
-      </div>
-      <div>
-        <dt>Pos</dt>
-        <dd>Waiting</dd>
-      </div>
-      <div>
-        <dt>Age</dt>
-        <dd>Waiting</dd>
-      </div>
-    `;
+    return "";
   }
 
   return `
@@ -233,6 +222,7 @@ function renderBoard() {
     photoWrap.innerHTML = photoMarkup(player, team.primaryColor);
     playerName.textContent = player ? player.name : "No pick yet";
     playerMeta.innerHTML = playerMetaMarkup(player);
+    playerMeta.hidden = !player;
 
     clearButton.dataset.teamId = team.id;
     clearButton.hidden = !player;
@@ -393,6 +383,18 @@ async function loadImage(src) {
   return imageCache.get(src);
 }
 
+async function ensureExportFontsReady() {
+  if (!document.fonts?.load) {
+    return;
+  }
+
+  await Promise.all([
+    document.fonts.load(`24px ${BODY_FONT_FAMILY}`),
+    document.fonts.load(`24px ${DISPLAY_FONT_FAMILY}`),
+  ]);
+  await document.fonts.ready;
+}
+
 function drawRowPlaceholder(ctx, team, x, y, size, text) {
   ctx.fillStyle = "#e6dfd1";
   ctx.beginPath();
@@ -411,7 +413,7 @@ async function buildExportCanvas() {
   canvas.height = 1200;
   const ctx = canvas.getContext("2d");
 
-  await document.fonts.ready;
+  await ensureExportFontsReady();
   const background = await loadImage("assets/images/all-nba-background.jpg").catch(() => null);
   if (background) {
     coverImage(ctx, background, 0, 0, canvas.width, canvas.height);

@@ -5,17 +5,18 @@
 }
 
 @font-face {
-  font-family: "Cooper Black Local";
-  src: local("Cooper Black");
+  font-family: "Cooper Black Web";
+  src:
+    url("assets/fonts/coopbl.ttf") format("truetype"),
+    local("Cooper Black");
+  font-style: normal;
+  font-weight: 400;
   font-display: swap;
 }
 
-/* The Cooper Black install on this machine is a legacy local font, so the site
-   uses the named local family unless a web-safe file is added later. */
-
 :root {
   --display-font: "Basketball", serif;
-  --body-font: "Cooper Black Local", "Cooper Black", Georgia, serif;
+  --body-font: "Cooper Black Web", "Cooper Black", Georgia, serif;
   --paper: rgba(249, 246, 238, 0.96);
   --paper-strong: rgba(255, 252, 246, 0.98);
   --ink: #1d2430;
